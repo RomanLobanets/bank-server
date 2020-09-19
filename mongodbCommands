@@ -1,0 +1,7 @@
+//   ==================================
+
+// mongoimport --host cluster0-shard-00-01.bjalc.mongodb.net:27017 --db dbbank -c transactions --type csv --headerline  --file ~/Downloads/transactions.csv --authenticationDatabase admin --ssl --username romanuser --password roman230289
+
+// db.transactions.aggregate([{$group:{_id:{walletId:"$walletId",firstName:"$firstName",lastName:"$lastName",email:"$email",password:"$password"}}},{$project:{_id: 0, walletId:"$_id.walletId",firstName:"$_id.firstName",lastName:"$_id.lastName",email:"$_id.email",password:"$_id.password"}},{$out:"users"}])
+
+ db.users.update({},{$set:{"verificationToken":""}},false,true)
