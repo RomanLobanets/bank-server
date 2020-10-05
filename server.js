@@ -4,7 +4,9 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-const bankRouter = require("./bank/bank.routes");
+const errorHandler = require("./bank/errorHandler");
+
+const { userRouter, transactionRouter } = require("./bank/routes/index");
 
 module.exports = class BankServer {
   constructor() {
@@ -14,6 +16,7 @@ module.exports = class BankServer {
     this.initServer();
     this.initMiddleWares();
     this.initRoutes();
+    this.server.use(errorHandler);
     await this.initDatabase();
     this.startListening();
   }
@@ -30,7 +33,8 @@ module.exports = class BankServer {
     this.server.use(cors({ origin: "http://localhost:3000" }));
   }
   initRoutes() {
-    this.server.use("/", bankRouter);
+    this.server.use("/", userRouter);
+    this.server.use("/", transactionRouter);
   }
   async initDatabase() {
     try {
@@ -38,7 +42,6 @@ module.exports = class BankServer {
         useUnifiedTopology: true,
         useNewUrlParser: true,
       });
-      // await mongoose.connection.dropDatabase();
       console.log("Database connected");
     } catch (err) {
       console.log(err);

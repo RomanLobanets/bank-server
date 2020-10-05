@@ -4,4 +4,8 @@
 
 // db.transactions.aggregate([{$group:{_id:{walletId:"$walletId",firstName:"$firstName",lastName:"$lastName",email:"$email",password:"$password"}}},{$project:{_id: 0, walletId:"$_id.walletId",firstName:"$_id.firstName",lastName:"$_id.lastName",email:"$_id.email",password:"$_id.password"}},{$out:"users"}])
 
- db.users.update({},{$set:{"verificationToken":""}},false,true)
+//db.transactions.update({},{$unset:{firstName:1,lastName:1,email:1,password:1}},false,true)
+
+//db.users.update({},{$set:{"verificationToken":""}},false,true)
+
+//db.token.createIndex( { "lastModifiedDate": 1 }, { expireAfterSeconds: 240 } )
