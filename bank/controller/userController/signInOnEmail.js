@@ -1,19 +1,27 @@
 const { userModel, tokenModel } = require("../../models/index");
+const { getBalance } = require("../../helpers/index");
+const { preparedUser } = require("../../helpers/index");
 
 const jwt = require("jsonwebtoken");
 
 module.exports = async (req, res, next) => {
   let error = null;
   try {
-    const { email, password } = req.body;
+    const { email, password } = res.locals.user;
+
     const user = await userModel.findUserByEmail(email);
-    if (!user || user.status !== "Verified") {
-      next("USERNOTVERIFIED");
+
+    if (!user || user.status !== true) {
+      error = "SIGNINERROR";
+      res.locals.errorMessage = "user doesnt exist or verified";
+      next(error);
       return;
     }
 
     if (password !== user.password) {
-      next("WRONGPASSWORD");
+      error = "SIGNINERROR";
+      res.locals.errorMessage = "wrong password";
+      next(error);
       return;
     }
     const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -25,13 +33,12 @@ module.exports = async (req, res, next) => {
       lastModifiedDate: Date.now(),
     });
 
+    const balance = await getBalance(user.walletId);
+
     return res.status(200).json({
-      token,
-      user: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-      },
+      token: token,
+      balance,
+      ...preparedUser(user),
     });
   } catch (err) {
     res.locals.errorMessage = err.message;

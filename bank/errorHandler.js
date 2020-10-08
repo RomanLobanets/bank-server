@@ -7,27 +7,41 @@ module.exports = (err, req, res, next) => {
       error = { code: err, message: res.locals.errorMessage };
       break;
     case "SIGNINERROR":
-      res
-        .status(406)
-        .json({ error: { code: err, message: res.locals.errorMessage } });
+      code = 406;
+      error = { code: err, message: res.locals.errorMessage };
       break;
     case "AUTHORIZEERROR":
-      res
-        .status(401)
-        .json({ error: { code: err, message: res.locals.errorMessage } });
+      code = 401;
+      error = { code: err, message: res.locals.errorMessage };
       break;
     case "UPDATEUSERERROR":
-      res
-        .status(406)
-        .json({ error: { code: err, message: res.locals.errorMessage } });
+      code = 406;
+      error = { code: err, message: res.locals.errorMessage };
       break;
     case "USERNOTVERIFIED":
-      res
-        .status(401)
-        .json({ error: { code: err, message: "User is not verified" } });
+      code = 406;
+      error = { code: err, message: res.locals.errorMessage };
       break;
     case "WRONGPASSWORD":
-      res.status(401).json({ error: { code: err, message: "Wrong password" } });
+      code = 406;
+      error = { code: err, message: res.locals.errorMessage };
+      break;
+    case "SIGNUPERROR":
+      code = 406;
+      error = { code: err, message: res.locals.errorMessage };
+      break;
+    case "LOGOUTERROR":
+      code = 409;
+      error = { code: err, message: res.locals.errorMessage };
+      break;
+    case "LISTUSERSERROR":
+      code = 401;
+      error = { code: err, message: res.locals.errorMessage };
+      break;
+    case "VERIFYEMAIL":
+      code = 403;
+      error = { code: err, message: res.locals.errorMessage };
+      break;
     default:
       next();
   }

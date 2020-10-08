@@ -25,19 +25,19 @@ class UserClass {
 
   static async verifyUser(userId) {
     return this.findByIdAndUpdate(userId, {
-      status: "Verified",
+      status: true,
       $unset: { verificationToken: 1 },
     });
   }
 
   static async changeEmail(userId) {
     return this.findByIdAndUpdate(userId, {
-      status: "Created",
+      status: false,
     });
   }
 
-  static async updateToken(id, token) {
-    return this.findByIdAndUpdate(id, { token }, { new: true });
-  }
+  // static async updateToken(id, token) {
+  //   return this.findByIdAndUpdate(id, { token }, { new: true });
+  // }
 }
 module.exports = UserClass;

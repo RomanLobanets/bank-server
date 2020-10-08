@@ -10,4 +10,5 @@ module.exports = {
   validateSignIn: require("./validateSignIn"),
   validateUpdateUser: require("./validateUpdateUser"),
   validateSignUpUser: require("./validateSignUpUser"),
+  authorizeToken: require("./authorizeToken"),
 };

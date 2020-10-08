@@ -38,10 +38,12 @@ module.exports = class BankServer {
   }
   async initDatabase() {
     try {
+      mongoose.set("debug", true);
       await mongoose.connect(process.env.MONGO_DB_URL, {
         useUnifiedTopology: true,
         useNewUrlParser: true,
       });
+
       console.log("Database connected");
     } catch (err) {
       console.log(err);

@@ -1,10 +1,25 @@
 const { userModel, transactionModel, tokenModel } = require("../models/index");
 
-async function getBalance(walletId) {
-  return transactionModel.aggregate([
-    {
-      $group: { _id: `$${walletId}`, balance: { $sum: "$amountInCents" } },
-    },
-  ]);
-}
-module.exports = getBalance;
+module.exports = async (walletId, session) => {
+  try {
+    const result = await transactionModel
+      .aggregate(
+        [
+          { $match: { walletId } },
+          { $group: { _id: null, balance: { $sum: "$amountInCents" } } },
+        ]
+        // { readConcern: { level: "local" } }
+      )
+      .session(session);
+    // .readConcern("snapshot");
+    // .maxTimeMS(10000);
+
+    if (result.length < 1 || result == undefined) {
+      return 0;
+    } else {
+      return result[0].balance;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};

@@ -1,4 +1,4 @@
 module.exports = {
-  userController: require("./user.controller"),
+  userController: require("./userController/index"),
   transactionController: require("./transactionController/index"),
 };

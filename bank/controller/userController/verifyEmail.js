@@ -1,21 +1,30 @@
 const { userModel } = require("../../models/index");
 
-const { UnauthorizedError } = require("../../helpers");
-
 module.exports = async (req, res, next) => {
+  let error = null;
   try {
     const token = req.params.token;
 
     const userToverify = await userModel.findByVerificationToken(token);
     if (!userToverify) {
-      throw new UnauthorizedError("User not authorized");
+      error = "VERIFYEMAIL";
+      res.locals.errorMessage = "verification token doesnt exist";
+      next(error);
+      return;
     }
-    const updateUser = await userModel.verifyUser(userToverify._id);
-    req.body = { ...updateUser._doc };
 
-    next();
-    // return res.status(200).send("your user is verified now you can sign in");
+    const updateUser = await userModel.verifyUser(userToverify._id);
+    if (!updateUser) {
+      error = "VERIFYEMAIL";
+      res.locals.errorMessage = "user doesnt exist";
+      next(error);
+      return;
+    }
+
+    res.locals.user = updateUser;
   } catch (err) {
-    next(err);
+    res.locals.errorMessage = err.message;
+    error = "VERIFYEMAIL";
   }
+  next(error);
 };

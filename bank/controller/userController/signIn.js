@@ -1,5 +1,6 @@
 const { userModel, tokenModel } = require("../../models/index");
 const { getBalance } = require("../../helpers/index");
+const { preparedUser } = require("../../helpers/index");
 
 const bcrytpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -11,15 +12,19 @@ module.exports = async (req, res, next) => {
 
     const user = await userModel.findUserByEmail(email);
 
-    if (!user || user.status !== "Verified") {
-      next("USERNOTVERIFIED");
+    if (!user || user.status !== true) {
+      error = "SIGNINERROR";
+      res.locals.errorMessage = "user doesnt exist or verified";
+      next(error);
       return;
     }
-    const balance = await getBalance(user.walletId);
+
     const isPasswordValid = await bcrytpt.compare(password, user.password);
-    console.log(isPasswordValid);
+
     if (!isPasswordValid) {
-      next("WRONGPASSWORD");
+      error = "SIGNINERROR";
+      res.locals.errorMessage = "wrong password";
+      next(error);
       return;
     }
     const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -32,14 +37,12 @@ module.exports = async (req, res, next) => {
       lastModifiedDate: Date.now(),
     });
 
+    const balance = await getBalance(user.walletId);
+
     return res.status(200).json({
-      token,
-      user: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        balance: balance[0].balance,
-      },
+      token: token,
+      balance,
+      ...preparedUser(user),
     });
   } catch (err) {
     res.locals.errorMessage = err.message;

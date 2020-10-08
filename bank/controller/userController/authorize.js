@@ -1,39 +1,32 @@
 const { userModel, tokenModel } = require("../../models/index");
 
-const jwt = require("jsonwebtoken");
-
 module.exports = async (req, res, next) => {
   let error = null;
+
   try {
-    const authorizationHeader = req.get("Authorization");
-    const token = authorizationHeader.replace("Bearer ", "");
-    let userId;
+    const userToken = await tokenModel.findByUserIdAndToken(
+      res.locals.userId,
+      res.locals.token
+    );
 
-    try {
-      userId = await jwt.verify(token, process.env.JWT_SECRET).id;
-    } catch (err) {
-      res.locals.errorMessage = "token doesnt veryfied";
-      next("AUTHORIZEERROR");
-    }
-    const userToken = await tokenModel.findByUserIdAndToken(userId, token);
-
-    if (!userToken && userToken.token !== token) {
+    if (!userToken) {
       res.locals.errorMessage = "token doesnt exist";
-      next("AUTHORIZEERROR");
+      error = "AUTHORIZEERROR";
+      next(error);
       return;
     }
-    const user = await userModel.findById(userId);
+    const user = await userModel.findById(res.locals.userId);
+    res.locals.user = user;
 
     if (!user) {
       res.locals.errorMessage = "user doesnt exist";
-      next("AUTHORIZEERROR");
+      error = "AUTHORIZEERROR";
+      next(error);
       return;
     }
-    res.locals.user = user;
-    res.locals.user.token = token;
-    next();
   } catch (err) {
     error = "AUTHORIZEERROR";
-    next(error);
+    res.locals.errorMessage = err.message;
   }
+  next(error);
 };

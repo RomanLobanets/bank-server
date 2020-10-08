@@ -20,11 +20,17 @@ userRouter.get("/signin", userController.validateSignIn, userController.signIn);
 
 userRouter.put(
   "/update",
+  userController.authorizeToken,
   userController.authorize,
   userController.validateUpdateUser,
   userController.updateUser
 );
 
-userRouter.patch("/logout", userController.authorize, userController.logout);
+userRouter.patch(
+  "/logout",
+  userController.authorizeToken,
+  userController.authorize,
+  userController.logout
+);
 
 module.exports = userRouter;

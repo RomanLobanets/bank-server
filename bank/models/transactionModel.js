@@ -7,7 +7,13 @@ const transactionSchema = new Schema({
   latitude: { type: Number, required: true },
   merchant: { type: String, required: true },
   amountInCents: { type: Number, required: true },
-  createdAt: { type: Date, required: true, default: new Date() },
+  createdAt: {
+    type: Number,
+    index: true,
+    unique: true,
+    required: true,
+    default: Date.now(),
+  },
 });
 
 const transactionModel = mongoose.model(

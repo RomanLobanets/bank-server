@@ -1,14 +1,18 @@
 const { userModel } = require("../../models/index");
 const { sendVerificationEmail } = require("../../helpers/index");
-
+const { preparedUser } = require("../../helpers/index");
 const bcrytpt = require("bcryptjs");
 
 module.exports = async (req, res, next) => {
+  console.log(res.locals.user);
+  let error;
+  let hashedPass;
+  const costFactor = 4;
   try {
-    let hashedPass;
     if (req.body.password) {
-      hashedPass = await bcrytpt.hash(req.body.password, this._costFactor);
+      hashedPass = await bcrytpt.hash(req.body.password, costFactor);
     }
+
     if (req.body.email) {
       await userModel.changeEmail(res.locals.user._id);
       await sendVerificationEmail(res.locals.user);
@@ -22,10 +26,10 @@ module.exports = async (req, res, next) => {
       }
     );
 
-    return res.status(201).json(updateSubscription);
+    return res.status(201).json(preparedUser(updateSubscription));
   } catch (err) {
-    console.log(err);
-
-    next(err);
+    res.locals.errorMessage = err.message;
+    error = "UPDATEUSERERROR";
+    next(error);
   }
 };

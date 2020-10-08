@@ -10,11 +10,9 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   verificationToken: { type: String, required: false, default: "" },
   status: {
-    type: String,
+    type: Boolean,
     required: true,
-    enum: ["Verified", "Created"],
-    // CHANGE IN BOOLEEN
-    default: "Created",
+    default: false,
   },
 });
 

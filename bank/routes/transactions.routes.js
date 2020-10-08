@@ -8,11 +8,13 @@ const transactionRouter = Router();
 
 transactionRouter.get(
   "/listtransactions",
+  userController.authorizeToken,
   userController.authorize,
   transactionController.listTransactions
 );
 transactionRouter.put(
   "/transaction",
+  userController.authorizeToken,
   userController.authorize,
   transactionController.addUserTransaction
 );
