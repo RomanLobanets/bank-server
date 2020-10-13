@@ -13,9 +13,7 @@ const transactionOptions = {
 };
 
 async function main() {
-  client = new MongoClient(
-    "mongodb+srv://romanuser:roman230289@bank.934h6.mongodb.net/dbbank?retryWrites=true&w=majority"
-  );
+  client = new MongoClient(process.env.MONGO_DB_URL);
   await client.connect();
 
   app.listen(3000, function () {
