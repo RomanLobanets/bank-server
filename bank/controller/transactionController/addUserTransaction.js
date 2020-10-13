@@ -20,11 +20,8 @@ module.exports = async (req, res, next) => {
       const newMerchant = await transactionModel.create(
         [
           {
+            ...req.body,
             walletId,
-            longitude,
-            latitude,
-            merchant,
-            amountInCents,
             createdAt,
           },
         ],

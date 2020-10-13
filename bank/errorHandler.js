@@ -42,6 +42,11 @@ module.exports = (err, req, res, next) => {
       code = 403;
       error = { code: err, message: res.locals.errorMessage };
       break;
+    case "LISTTRANSERROR":
+      code = 403;
+      error = { code: err, message: res.locals.errorMessage };
+      break;
+
     default:
       next();
   }

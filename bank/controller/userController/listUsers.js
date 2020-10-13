@@ -1,5 +1,5 @@
-const { userModel } = require("../../models/index");
-const { preparedUser } = require("../../helpers/index");
+const { preparedUser } = require("../../helpers/");
+const { userModel } = require("../../models");
 
 module.exports = async (req, res, next) => {
   let error = null;
@@ -7,7 +7,7 @@ module.exports = async (req, res, next) => {
     const users = await userModel.find();
     return res.status(200).json(preparedUser(users));
   } catch (err) {
-    res.locals.errorMessage = err.message;
+    res.locals.errorMessage = "something went wrong please try later";
     error = "LISTUSERSERROR";
   }
   next(error);

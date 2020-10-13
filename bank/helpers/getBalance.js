@@ -7,6 +7,7 @@ module.exports = async (walletId, session) => {
         [
           { $match: { walletId } },
           { $group: { _id: null, balance: { $sum: "$amountInCents" } } },
+          // { $match: { balance: { $gte: 0 } } },
         ]
         // { readConcern: { level: "local" } }
       )
