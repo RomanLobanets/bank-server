@@ -45,7 +45,9 @@ describe("list users error", () => {
   let next;
 
   beforeEach(() => {
-    jest.spyOn(userModel, "find").mockReturnValue(Promise.reject());
+    jest
+      .spyOn(userModel, "find")
+      .mockReturnValue(Promise.reject(new Error("test")));
     res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),

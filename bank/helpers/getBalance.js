@@ -1,17 +1,16 @@
 const { userModel, transactionModel, tokenModel } = require("../models/index");
 
-module.exports = async (walletId, session) => {
+module.exports = async (walletId) => {
   try {
-    const result = await transactionModel
-      .aggregate(
-        [
-          { $match: { walletId } },
-          { $group: { _id: null, balance: { $sum: "$amountInCents" } } },
-          // { $match: { balance: { $gte: 0 } } },
-        ]
-        // { readConcern: { level: "local" } }
-      )
-      .session(session);
+    const result = await transactionModel.aggregate(
+      [
+        { $match: { walletId } },
+        { $group: { _id: null, balance: { $sum: "$amountInCents" } } },
+        // { $match: { balance: { $gte: 0 } } },
+      ]
+      // { readConcern: { level: "local" } }
+    );
+    // .session(session);
     // .readConcern("snapshot");
     // .maxTimeMS(10000);
 

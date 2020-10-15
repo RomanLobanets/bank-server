@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 module.exports = async (req, res, next) => {
+  // console.log(req);
   const authorizationHeader = req.get("Authorization");
   const token = authorizationHeader.replace("Bearer ", "");
   let userId;

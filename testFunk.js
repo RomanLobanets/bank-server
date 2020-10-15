@@ -1,10 +1,4 @@
-const MongoClient = require("mongodb").MongoClient;
-const express = require("express");
-const cors = require("cors");
-const morgan = require("morgan");
-
-const app = express();
-let client;
+const { MongoClient } = require("mongodb");
 
 const transactionOptions = {
   readPreference: "primary",
@@ -13,14 +7,61 @@ const transactionOptions = {
 };
 
 async function main() {
-  client = new MongoClient(process.env.MONGO_DB_URL);
+  const client = new MongoClient(
+    "mongodb+srv://romanuser:roman230289@bank.934h6.mongodb.net/dbbank?retryWrites=true&w=majority",
+    { useUnifiedTopology: true }
+  );
   await client.connect();
 
-  app.listen(3000, function () {
-    console.log("server starts");
-  });
+  const transaction = client.db("dbbank").collection("transactions");
+
+  const money = {
+    walletId: "d5e2c560-09f2-4e5f-8018-199ada67051f",
+    longitude: "-100",
+    latitude: "-100",
+    merchant: "Bed",
+  };
+
+  await Promise.all([
+    runTest(client, transaction, { ...money, amountInCents: 100 }),
+    runTest(client, transaction, { ...money, amountInCents: 200 }),
+    runTest(client, transaction, { ...money, amountInCents: -400 }),
+    runTest(client, transaction, { ...money, amountInCents: 100 }),
+    runTest(client, transaction, { ...money, amountInCents: 200 }),
+    runTest(client, transaction, { ...money, amountInCents: -600 }),
+  ]);
 }
-app.use(express.json());
+
+async function runTest(client, transaction, body) {
+  const session = client.startSession();
+
+  try {
+    const transactionResult = await session.withTransaction(async () => {
+      await transaction.insertOne(body, { session });
+
+      const cursor = await transaction.aggregate([
+        { $match: { walletId: "d5e2c560-09f2-4e5f-8018-199ada67051f" } },
+        { $group: { _id: null, balance: { $sum: "$amountInCents" } } },
+        { $project: { _id: 0, balance: 1 } },
+      ]);
+
+      for await (const { balance } of cursor) {
+        console.log(balance);
+        if (balance < 0) {
+          await session.abortTransaction();
+          throw new Error("bad balance");
+        }
+      }
+    }, transactionOptions);
+    console.log("done"); // transactionResult
+  } catch (error) {
+    console.error(error);
+  } finally {
+    await session.endSession();
+  }
+}
+
+main().catch(console.error);
 
 // app.put("/transations", async (req, res) => {
 //   console.log(req.body);
@@ -56,49 +97,3 @@ app.use(express.json());
 //     // await client.close();
 //   }
 // });
-app.put("/transations", async (req, res) => {
-  const transaction = client.db("dbbank").collection("transactions");
-  const session = client.startSession();
-
-  const transactionOptions = {
-    readPreference: "primary",
-    readConcern: { level: "local" },
-    writeConcern: { w: "majority" },
-  };
-  try {
-    const transactionResult = await session.withTransaction(async () => {
-      await transaction.insertOne(req.body, { session });
-
-      const bal = await transaction.aggregate([
-        { $match: { walletId: "d5e2c560-09f2-4e5f-8018-199ada67051f" } },
-        { $group: { _id: null, balance: { $sum: "$amountInCents" } } },
-        { $project: { _id: 0, balance: 1 } },
-      ]);
-      // .toArray(async (err, list) => {
-      //   console.log({ balance: list[0].balance });
-
-      //   if (list[0].balance < 0) {
-      //     await session.abortTransaction();
-      //     console.log("balance to low");
-      //     return res.status(403).json("balance to low");
-      //   }
-      // });
-
-      bal.toArray(async function (err, docs) {
-        console.log(docs);
-
-        if (docs[0].balance < 0) {
-          await session.abortTransaction();
-          return res.status(403).json("balance to low");
-        }
-      });
-    }, transactionOptions);
-    return res.status(201).json("ok");
-  } catch (err) {
-    console.log("trans aborted");
-  } finally {
-    await session.endSession();
-  }
-});
-
-main();

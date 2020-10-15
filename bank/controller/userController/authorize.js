@@ -26,7 +26,7 @@ module.exports = async (req, res, next) => {
     }
   } catch (err) {
     error = "AUTHORIZEERROR";
-    res.locals.errorMessage = err.message;
+    res.locals.errorMessage = "Oops something went wrong with authorize";
   }
   next(error);
 };

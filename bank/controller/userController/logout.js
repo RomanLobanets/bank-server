@@ -19,7 +19,7 @@ module.exports = async (req, res, next) => {
     return res.status(204).send();
   } catch (err) {
     error = "LOGOUTERROR";
-    res.locals.errorMessage = err.message;
+    res.locals.errorMessage = "Oops something went wrong try later";
   }
   next(error);
 };

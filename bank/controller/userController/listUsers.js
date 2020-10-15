@@ -7,6 +7,7 @@ module.exports = async (req, res, next) => {
     const users = await userModel.find();
     return res.status(200).json(preparedUser(users));
   } catch (err) {
+    // console.error(err);
     res.locals.errorMessage = "something went wrong please try later";
     error = "LISTUSERSERROR";
   }
