@@ -10,7 +10,7 @@ module.exports = (params) => {
       .email()
       .required()
       .error(new Error("Email Is required")),
-    password: Joi.string().required().error(new Error("password Is required")),
+    password: Joi.string().required().error(new Error("Password Is required")),
   });
   const { error } = createSignUpRules.validate(params);
   if (error) {

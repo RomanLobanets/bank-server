@@ -6,7 +6,7 @@ module.exports = async (req, res, next) => {
     JoiSignUp(req.body);
   } catch (err) {
     res.locals.errorMessage = err.message;
-    error = "UPDATEUSERERROR";
+    error = "VALIDATESIGNUPUSER";
   }
   next(error);
 };

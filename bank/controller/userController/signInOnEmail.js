@@ -41,7 +41,7 @@ module.exports = async (req, res, next) => {
       ...preparedUser(user),
     });
   } catch (err) {
-    res.locals.errorMessage = err.message;
+    res.locals.errorMessage = "Oops something went wrong try it later";
     error = "SIGNINERROR";
     next(error);
   }

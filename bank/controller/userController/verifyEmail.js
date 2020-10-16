@@ -23,7 +23,7 @@ module.exports = async (req, res, next) => {
 
     res.locals.user = updateUser;
   } catch (err) {
-    res.locals.errorMessage = err.message;
+    res.locals.errorMessage = "Oops something went wrong try later";
     error = "VERIFYEMAIL";
   }
   next(error);

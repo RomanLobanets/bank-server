@@ -4,7 +4,6 @@ const { preparedUser } = require("../../helpers/index");
 const bcrytpt = require("bcryptjs");
 
 module.exports = async (req, res, next) => {
-  console.log(res.locals.user);
   let error;
   let hashedPass;
   const costFactor = 4;
@@ -28,8 +27,8 @@ module.exports = async (req, res, next) => {
 
     return res.status(201).json(preparedUser(updateSubscription));
   } catch (err) {
-    res.locals.errorMessage = err.message;
     error = "UPDATEUSERERROR";
+    res.locals.errorMessage = "Oops something went wrong try later";
     next(error);
   }
 };
