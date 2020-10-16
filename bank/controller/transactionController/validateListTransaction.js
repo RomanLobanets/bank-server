@@ -4,7 +4,7 @@ module.exports = async (req, res, next) => {
   let error = null;
 
   try {
-    JoiValidateTransactionListQuery(req.query);
+    JoiValidateTransactionListQuery(req.params);
   } catch (err) {
     res.locals.errorMessage = err.message;
     error = "VALIDATIONERROR";

@@ -1,4 +1,3 @@
-const { expectation } = require("sinon");
 const {
   transactionModel,
   userModel,

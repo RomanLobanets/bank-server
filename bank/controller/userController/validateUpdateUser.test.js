@@ -107,57 +107,57 @@ describe("validateSignIn throw error on lastName", () => {
   });
 });
 
-// describe("validateSignIn throw error on password", () => {
-//   let res;
-//   let req;
-//   let next;
-//   let errorMessage;
-//   beforeEach(() => {
-//     req = {
-//       body: {
-//         firstName: "Roman",
-//         lastName: "Lobanets",
-//         email: "lobanets@gmail.com",
-//         password: 1234,
-//       },
-//     };
-//     res = { locals: { errorMessage } };
-//     next = jest.fn();
-//   });
-//   afterEach(() => {
-//     jest.resetAllMocks();
-//   });
-//   it("should throw password error", async () => {
-//     await validateUpdateUser(req, res, next);
-//     expect(res.locals.errorMessage).toBe("Password name should be a string");
-//     expect(next).toBeCalledWith("UPDATEUSERERROR");
-//   });
-// });
+describe("validateSignIn throw error on password", () => {
+  let res;
+  let req;
+  let next;
+  let errorMessage;
+  beforeEach(() => {
+    req = {
+      body: {
+        firstName: "Roman",
+        lastName: "Lobanets",
+        email: "lobanets@gmail.com",
+        password: 1234,
+      },
+    };
+    res = { locals: { errorMessage } };
+    next = jest.fn();
+  });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+  it("should throw password error", async () => {
+    await validateUpdateUser(req, res, next);
+    expect(res.locals.errorMessage).toBe("Password name should be a string");
+    expect(next).toBeCalledWith("UPDATEUSERERROR");
+  });
+});
 
-// describe("validateSignIn throw error on extra field", () => {
-//   let res;
-//   let req;
-//   let next;
-//   let errorMessage;
-//   beforeEach(() => {
-//     req = {
-//       body: {
-//         firstName: "Roman",
-//         lastName: "Lobanets",
-//         email: "lobanets@gmail.com",
-//         password: "roman",
-//         name: "wrong field",
-//       },
-//     };
-//     res = { locals: { errorMessage } };
-//     next = jest.fn();
-//   });
-//   afterEach(() => {
-//     jest.resetAllMocks();
-//   });
-//   it("should throw extra field  error", async () => {
-//     await validateUpdateUser(req, res, next);
-//     expect(res.locals.errorMessage).toBe('"name" is not allowed');
-//     expect(next).toBeCalledWith("UPDATEUSERERROR");
-//   });
-// });
+describe("validateSignIn throw error on extra field", () => {
+  let res;
+  let req;
+  let next;
+  let errorMessage;
+  beforeEach(() => {
+    req = {
+      body: {
+        firstName: "Roman",
+        lastName: "Lobanets",
+        email: "lobanets@gmail.com",
+        password: "roman",
+        name: "wrong field",
+      },
+    };
+    res = { locals: { errorMessage } };
+    next = jest.fn();
+  });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+  it("should throw extra field  error", async () => {
+    await validateUpdateUser(req, res, next);
+    expect(res.locals.errorMessage).toBe('"name" is not allowed');
+    expect(next).toBeCalledWith("UPDATEUSERERROR");
+  });
+});
