@@ -7,10 +7,7 @@ const transactionOptions = {
 };
 
 async function main() {
-  const client = new MongoClient(
-    "mongodb+srv://romanuser:roman230289@bank.934h6.mongodb.net/dbbank?retryWrites=true&w=majority",
-    { useUnifiedTopology: true }
-  );
+  const client = new MongoClient({ useUnifiedTopology: true });
   await client.connect();
 
   const transaction = client.db("dbbank").collection("transactions");
