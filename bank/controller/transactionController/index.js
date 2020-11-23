@@ -1,6 +1,7 @@
 module.exports = {
   addUserTransaction: require("./addUserTransaction"),
   listTransactions: require("./listTransaction"),
-  validteListTransaction: require("./validteListTransaction"),
+  validateListTransaction: require("./validateListTransaction"),
   validateUserTransaction: require("./validateUserTransaction"),
 };
+

@@ -11,7 +11,7 @@ transactionRouter.get(
   "/listtransactions",
   userController.authorizeToken,
   userController.authorize,
-  transactionController.validteListTransaction,
+  transactionController.validateListTransaction,
   transactionController.listTransactions
 );
 transactionRouter.put(
